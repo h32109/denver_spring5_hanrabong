@@ -1,7 +1,7 @@
 "use strict";
 var auth = auth || {};
 auth = (()=>{
-	const WHEN_ERR = '호출하는 JS파일을 찾지 못했습니다.'
+	const WHEN_ERR = '호출하는! JS파일을 찾지 못했습니다.'
 	let _, js, authvuejs, brdvuejs
 	let init = ()=>{
 		_ = $.ctx()
