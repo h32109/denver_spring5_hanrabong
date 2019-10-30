@@ -2,16 +2,22 @@
 var auth = auth || {};
 auth = (()=>{
 	const WHEN_ERR = '호출하는! JS파일을 찾지 못했습니다.'
-	let _, js, authvuejs, brdvuejs
+	let _, js, authvuejs, brdvuejs, brdjs, routerjs, cookiejs
 	let init = ()=>{
 		_ = $.ctx()
-		js = $.js()
+		js = $.js() 
 		authvuejs = js+'/vue/auth_vue.js'
-		brdvuejs = js+'/vue/brd_vue.js'
+		brdjs = js+'/brd/brd.js'
+		routerjs = js+'/cmm/router.js'
+		cookiejs = js +'/cmm/cookie.js'
 	}
 	let onCreate =()=>{
 		init()
-		$.getScript(authvuejs).done(()=>{
+		$.when($.getScript(authvuejs),
+				$.getScript(cookiejs),
+					 $.getScript(routerjs),
+						$.getScript(brdjs))
+		.done(()=>{
 			setContentView()
 			$('#a_go_join').click(e=>{
 				e.preventDefault()
@@ -19,13 +25,32 @@ auth = (()=>{
 				.html(auth_vue.join_head)
 				$('body')
 				.html(auth_vue.join_body)
+				$('#cid').keyup(()=>{
+					if($('#cid').val().length > 2)
+						$.ajax({
+							url : _+'/customers/'+$('#cid').val(),
+							contentType : 'application/json',
+							success : d =>{
+								if(d.msg==='success')
+									{$('#dupl_check')
+									.val('회원가입 가능한 아이디')
+									.css('color', 'blue')
+									}
+								else
+									$('#dupl_check')
+									.val('회원가입 불가능한 아이디')
+									.css('color', 'red')
+							},
+							error : e =>{alert('AJAX실패')}
+						})
+				})
 				$('<button>',{
-          text : 'Continue to checkout' ,
-          href: '#' ,
-          click : e=>{
-          e.preventDefault()
-            existId()
-			}
+			          text : 'Continue to checkout' ,
+			          href: '#' ,
+			          click : e=>{
+				          e.preventDefault()
+				          existId()
+			          }
           }).addClass('btn btn-primary btn-lg btn-block')
           .appendTo('#btn_join_test')
 			})
@@ -33,13 +58,19 @@ auth = (()=>{
 }
 	
 	let setContentView =()=>{
+        $('head')
+        .html(auth_vue.login_head({css : $.css(), img : $.img()}))        
+        $('body')
+        .addClass('text-center')
+        .html(auth_vue.login_body({css : $.css(), img : $.img()}))     
 		login()
 	}
 	
 	let join =()=>{
           let data = { cid :  $('#cid').val() ,
           cpw : $('#cpw').val(),
-          cnum : $('#cnum').val()}
+          cnum : $('#cnum').val(),
+          cname : $('#cname').val()}
            $.ajax({
            url : _+'/customers/',
            type : 'POST',
@@ -48,12 +79,17 @@ auth = (()=>{
            contentType : 'application/json',
            success : d =>{
         	   if(d.msg === 'success')
-        		   {alert(data.cid+'님 가입을 환영합니다.')
+        		   {alert(data.cname+'님 가입을 환영합니다.')
+        	        $('head')
+        	        .html(auth_vue.login_head({css : $.css(), img : $.img()}))        
+        	        $('body')
+        	        .addClass('text-center')
+        	        .html(auth_vue.login_body({css : $.css(), img : $.img()}))     
         		   login()}
         	   else 
         		   alert('회원가입실패')
            },
-          error : e =>{alert('AJAX실패' + url)}
+          error : e =>{alert('AJAX실패')}
          
          })
          }
@@ -62,16 +98,16 @@ auth = (()=>{
 	
 	
 	let login =()=>{
-		let x = {css : $.css(), img : $.img()}
-        $('head').html(auth_vue.login_head(x))        
-        $('body').addClass('text-center').html(auth_vue.login_body(x))     
+
         $('<button>',{
        	 text : 'Sign in',
        	 href : '#',
        	 click : e=>{
        		 e.preventDefault();
        		 let data = { cid : $('#cid').val(),
-       		 		cpw : $('#cpw').val()}
+       		 		cpw : $('#cpw').val(),
+       		 		cnum : $('#cnum').val(),
+       		 		cname : $('#cname').val()}
        		 $.ajax({
        			 url : _+'/customers/'+data.cid,
        			 type : 'POST',
@@ -79,13 +115,17 @@ auth = (()=>{
        			 data : JSON.stringify(data),
        			 contentType : 'application/json',
        			 success : d =>{
-       				 if(d.cnum!=null)
-       				 { alert(d.cnum + '님 환영합니다.')
-       					boardHome()}
-       				 else
-       					 alert('회원가입 실패')
-       			 },
-       			 error : e =>{alert('AJAX실패' + url)}
+       				 alert(d.cname + '님 환영합니다.')
+       								setCookie("cid",d.cid)
+       								setCookie("cpw",d.cpw)
+       								setCookie("cnum",d.cnum)
+       								setCookie("cname",d.cname)
+       								alert(getCookie("cid"))
+       								brd.onCreate()
+       					
+       				},
+       			 
+       			 error : e =>{alert('AJAX실패' )}
        		 })
        	 }
         })
@@ -93,10 +133,10 @@ auth = (()=>{
         .appendTo('#login_btn')
 	}
 	
-	let mypage =(d)=>{
+/*	let mypage =(d)=>{
 	     $('head').html(auth_vue.mypage_head())      
 	     $('body').html(auth_vue.mypage_body(d))      
-	}
+	}*/
 	
 	let existId = ()=>{
 		$.ajax({
@@ -112,16 +152,10 @@ auth = (()=>{
 				else
 					alert('아이디 중복')
 			},
-			error : e =>{alert('AJAX실패'+url)}
+			error : e =>{alert('AJAX실패')}
 		})
 	}
 	
-	let boardHome = ()=>{
-		$.getScript(brdvuejs).done(()=>{
-		$('head').html(brd_vue.brd_head)      
-	     $('body').html(brd_vue.brd_body)
-	     }).fail(()=>{alert(WHEN_ERR)})
-	}
 	
 	
 	return {onCreate}

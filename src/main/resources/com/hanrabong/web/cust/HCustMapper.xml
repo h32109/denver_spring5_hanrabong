@@ -5,16 +5,16 @@
  <mapper namespace="com.hanrabong.web.cust.HCustMapper">
 	
 	<select id="selectByIdAndPw" resultType="Cust">
-		SELECT CNUM, CID, CPW
+		SELECT CNUM, CID, CPW, CNAME
 		FROM HCUST
 		WHERE CID like #{cid} and CPW like #{cpw}
 	</select>
 	
 	
 	<insert id="insertHCust" parameterType="Cust">
-	    insert into HCUST(CNUM, CID, CPW) 
+	    insert into HCUST(CNUM, CID, CPW, CNAME) 
 	    values (
-	    	#{cnum}, #{cid}, #{cpw}
+	    	#{cnum}, #{cid}, #{cpw}, #{cname}
 	    )
 	</insert>
 	

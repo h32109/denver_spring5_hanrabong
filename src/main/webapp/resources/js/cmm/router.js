@@ -13,3 +13,4 @@ function Session(x){
 		authjs : ()=>{return sessionStorage.getItem('authjs')},
 	}
 }
+
