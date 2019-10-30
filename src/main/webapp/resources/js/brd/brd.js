@@ -54,7 +54,7 @@ brd = (()=>{
 						text : j.title
 					}).appendTo('#id_'+i)
 					.click(()=>{
-						alert('제목클릭')
+						alert('제목클릭!')
 						content(j)
 					})
 					$('#abc'+i)
