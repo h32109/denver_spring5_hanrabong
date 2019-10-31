@@ -1,5 +1,8 @@
 package com.hanrabong.web.adm;
 
-public interface HAdminMapper {
+import org.springframework.stereotype.Repository;
 
+@Repository
+public interface HAdminMapper {
+	public HAdmin existAdmin(HAdmin param);
 }

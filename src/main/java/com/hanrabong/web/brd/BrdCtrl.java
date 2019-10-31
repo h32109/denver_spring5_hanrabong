@@ -59,6 +59,8 @@ public class BrdCtrl {
 	}
 	@PostMapping("/")
 	public Map<?,?> putBrd(@RequestBody Brd param) {
+		ISupplier<Integer> s = ()-> brdMapper.countBrd();
+		param.setBrdseq(String.valueOf(s.get()+1));
 		IConsumer<Object> f = p -> brdMapper.insertContent(param);
 		f.accept(param);
 		map.clear();

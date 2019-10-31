@@ -54,7 +54,6 @@ brd = (()=>{
 						text : j.title
 					}).appendTo('#id_'+i)
 					.click(()=>{
-						alert('제목클릭!')
 						content(j)
 					})
 					$('#abc'+i)
@@ -78,7 +77,6 @@ brd = (()=>{
 		.addClass('btn btn-danger')
 		.appendTo('#write_cancle')
 		.click(()=>{
-			alert('취소')
 			setContentView()
 		})
 		$('<input>',{
@@ -122,7 +120,6 @@ brd = (()=>{
 		.addClass('btn btn-danger')
 		.appendTo('#write_update')
 		.click(()=>{
-			alert('업데이트')
 			update(x)
 		})
 		$('<input>', {
@@ -132,7 +129,7 @@ brd = (()=>{
 		.addClass('btn btn-danger')
 		.appendTo('#write_delete')
 		.click(()=>{
-			alert('삭제')
+			alert('삭제합니다.')
 			let data={brdseq : $('#brdseq').val()}
 			$.ajax({
 				url:_+'/brds/'+data.brdseq,
@@ -156,7 +153,6 @@ brd = (()=>{
 		.addClass('btn btn-danger')
 		.appendTo('#write_back')
 		.click(()=>{
-			alert('뒤로가기')
 			setContentView()
 		})
 	}
@@ -171,7 +167,6 @@ brd = (()=>{
 		.addClass('btn btn-danger')
 		.appendTo('#update_back')
 		.click(()=>{
-			alert('뒤로가기')
 			content(x)
 		})
 		$('<input>', {

@@ -2,7 +2,7 @@
 var auth = auth || {};
 auth = (()=>{
 	const WHEN_ERR = '호출하는! JS파일을 찾지 못했습니다.'
-	let _, js, authvuejs, brdvuejs, brdjs, routerjs, cookiejs
+	let _, js, authvuejs, brdvuejs, brdjs, routerjs, cookiejs, admjs
 	let init = ()=>{
 		_ = $.ctx()
 		js = $.js() 
@@ -10,13 +10,15 @@ auth = (()=>{
 		brdjs = js+'/brd/brd.js'
 		routerjs = js+'/cmm/router.js'
 		cookiejs = js +'/cmm/cookie.js'
+		admjs = js+'/adm/adm.js'
 	}
 	let onCreate =()=>{
 		init()
 		$.when($.getScript(authvuejs),
 				$.getScript(cookiejs),
 					 $.getScript(routerjs),
-						$.getScript(brdjs))
+						$.getScript(brdjs),
+						$.getScript(admjs))
 		.done(()=>{
 			setContentView()
 			$('#a_go_join').click(e=>{
@@ -64,6 +66,7 @@ auth = (()=>{
         .addClass('text-center')
         .html(auth_vue.login_body({css : $.css(), img : $.img()}))     
 		login()
+		access()
 	}
 	
 	let join =()=>{
@@ -120,7 +123,6 @@ auth = (()=>{
        								setCookie("cpw",d.cpw)
        								setCookie("cnum",d.cnum)
        								setCookie("cname",d.cname)
-       								alert(getCookie("cid"))
        								brd.onCreate()
        					
        				},
@@ -156,7 +158,34 @@ auth = (()=>{
 		})
 	}
 	
-	
+	let access =()=>{
+		$('#a_go_admin').click(()=>{
+			let ok = confirm('사원입니까?')
+			if(ok){
+				let anum = prompt('사원번호를 입력하시오')
+				let apw = prompt('비밀번호를 입력하시오')
+				let spec = {anum : anum , apw: apw }
+				$.ajax({
+					url : _+'/admins/'+anum,
+					type : 'POST',
+					data : JSON.stringify(spec),
+					dataType : 'json',
+					contentType : 'application/json',
+					success : d=>{
+						if(d.msg==='success'){
+							adm.onCreate()
+						}else{
+							alert('접근불가')
+						}
+					},
+					error : e=>{
+						alert('접근 불가')
+						setContentView()
+					}
+				})
+			}
+		})
+	}
 	
 	return {onCreate}
 })();

@@ -36,7 +36,7 @@ navi_vue = {
 			'      </div>'+
 			'    </nav>'+
 
-			'    <div class="nav-scroller bg-white box-shadow">'+
+			'    <div id = "navi_link" class="nav-scroller bg-white box-shadow">'+
 			'      <nav class="nav nav-underline">'+
 			'        <a class="nav-link active" href="#">Dashboard</a>'+
 			'        <a class="nav-link" href="#">'+

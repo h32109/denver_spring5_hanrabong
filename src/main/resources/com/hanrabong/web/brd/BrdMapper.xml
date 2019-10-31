@@ -4,8 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="com.hanrabong.web.brd.BrdMapper">
 	<insert id="insertContent" parameterType="Brd">
-		INSERT INTO BRD(WRITER, TITLE, CONTENT)
-		VALUES(#{writer}, #{title}, #{content})
+		INSERT INTO BRD(BRDSEQ ,WRITER, TITLE, CONTENT)
+		VALUES(#{brdseq},#{writer}, #{title}, #{content})
 	</insert>
 	<select id="readBrd" parameterType="int" resultType="Brd">
 		SELECT TITLE, BRDSEQ, CONTENT, WRITER  

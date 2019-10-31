@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 public class HAdmin {
 	
-	private String anum, aid, apw, aname, authority, part;
+	private String anum, apw, aname, authority, department, pnum, shipnum;
 	
 	
 }
