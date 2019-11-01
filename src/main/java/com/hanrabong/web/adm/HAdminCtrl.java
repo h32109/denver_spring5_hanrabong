@@ -19,7 +19,7 @@ import com.hanrabong.web.cmm.IFunction;
 @RequestMapping("/admins")
 public class HAdminCtrl {
 	@Autowired HAdminMapper hAdminMapper;
-	@Autowired Map<String,Object> map;
+	@Autowired Map<String,Object> adminMap;
 	
 	/*@PutMapping("/{anum}")
 	public Map<?,?> updateAdmin(@PathVariable String anum, @RequestBody HAdmin param){
@@ -50,9 +50,9 @@ public class HAdminCtrl {
 			msg = "fail";
 		};
 		System.out.println(msg);
-		map.clear();
-		map.put("msg", msg);
-		return map;
+		adminMap.clear();
+		adminMap.put("msg", msg);
+		return adminMap;
 	}
 	
 }

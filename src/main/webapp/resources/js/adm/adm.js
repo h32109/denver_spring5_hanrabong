@@ -78,22 +78,73 @@ var adm = adm || {}
 
 		}
 		
+
+		
 		let webCrawl=()=>{
 			$('#right').empty()
-			$('</br></br></br></br></br><h2>Web Crawling</h2></br></br></br></br></br></br></br>'+
+			$('</br><h2>Web Crawling</h2></br></br>'+
 					'<form id="crawl_form" class="form-inline my-2 my-lg-0">'+
-					'  <select name="cars" size="1" multiple>'+
+					'  <select name="site" size="1">'+
 					'  </select>'+
-			          '<input class="form-control mr-sm-2" type="text" placeholder="insert URL for crawling" aria-label="Search">'+
-			          '<button class="btn btn-secondary my-2 my-sm-0" type="submit">go crawl</button>'+
-					'</form>')
+			          '<input id = "search"class="form-control mr-sm-2" type="text" placeholder="insert URL for crawling" aria-label="Search">'+
+			          '<button value = "crawl1" id = "crawl1"class="btn btn-secondary my-2 my-sm-0" >go crawl</button>'+
+			          '<button value = "crawl2" id = "crawl2" class="btn btn-secondary my-2 my-sm-0" >search</button>'+
+					'</form></br></br>')
 			.appendTo('#right')
+			$(document).ready(function(){
+			    $("#search").keydown(function(key) {
+			        if (key.keyCode == 13) {
+			        	$.getJSON(_+'/txs/crawling/'+$('#crawl_form select').val()+'/'+$('#search').val(),d=>{
+							$('<h10>',{
+								text : d[0]
+							}).appendTo('#result')
+							.css({width:'100%',height : '70%'})
+						})
+			        }
+			    })
+		    })
 			$('#crawl_form input[class="form-control mr-sm-2"]')
-			.css({width:'80%'})
+			.css({width:'90%'})
 			$.each([{sub:'naver'},{sub:'daum'},{sub:'google'},{sub:'youtube'}],(i,j)=>{
-				$('<option name='+j.sub+'>'+j.sub+'</option>').appendTo('#crawl_form select')
+				$('<option value='+j.sub+'>'+j.sub+'</option>')
+				.appendTo('#crawl_form select')
 			})
-			
+			$('<div id = "result">')
+			.appendTo('#right')
+			.css({width:'100%',height : '50%','overflow-x':'scroll', 'overflow-y':'scroll'})
+			$('#crawl2').click(e=>{
+				$('#result').empty()
+				e.preventDefault();
+				if(!$.fn.nullChecker([$('#search').val()])){
+				$.getJSON(_+'/txs/crawling/'+$('#crawl_form select').val()+'/'+$('#search').val(),d=>{
+					$('<h10>',{
+						text : d[0]
+					}).appendTo('#result')
+					.css({width:'100%',height : '70%'})
+				})}
+			})
+			$('#crawl1').click(e=>{
+				$('#result').empty()
+				e.preventDefault();
+				let url = {search : $('#search').val()}
+				$.ajax({
+					url:_+'/txs/',
+					type : 'POST',
+					data:JSON.stringify(url),
+					dataType :'json',
+					contentType :'application/json',
+					success:d=>{
+						$('<h10>',{
+							text : d[0]
+						}).appendTo('#result')
+						.css({width:'100%',height : '70%'})
+					},
+					error:e=>{
+						alert('크롤링실패')
+					}
+					
+				})
+			})
 		}
 		return {onCreate}
 	})()
