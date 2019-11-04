@@ -8,4 +8,16 @@
 		from HADMIN
 		where ANUM like #{anum} and APW like #{apw}
 	</select>
+	<select id="selectAdIn" resultType="HAdmin" parameterType="hashmap">
+		SELECT CNUM, CID, CPW, CNAME
+		FROM HADMIN
+		<trim prefix="WHERE" prefixOverrides="AND |OR">
+		<if test="anum != null">
+			${anum} like #{anum}
+		</if>
+		<if test="apw != null">
+			AND ${apw} like #{apw}
+		</if>
+		</trim>
+	</select>
 </mapper>
