@@ -39,7 +39,6 @@ public class HAdminCtrl {
 	
 	@PostMapping("/{anum}")
 	public Map<?,?> putAdmin(@PathVariable String anum, @RequestBody HAdmin param){
-		System.out.println("들어옴!");
 		HAdmin adm = new HAdmin();
 		String msg = "";
 		IFunction<HAdmin, HAdmin> f = t -> hAdminMapper.existAdmin(param);

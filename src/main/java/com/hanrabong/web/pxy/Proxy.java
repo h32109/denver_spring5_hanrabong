@@ -1,4 +1,4 @@
-package com.hanrabong.web.aop;
+package com.hanrabong.web.pxy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import com.hanrabong.web.brd.BrdMapper;
+import com.hanrabong.web.cmm.ISupplier;
+
 import lombok.Data;
 
 @Data @Component @Lazy
 public class Proxy {
-	private int pagenum;
+	
+	private int pagenum, pagesize, startrow;
 	private String search;
+	private final int BLOCK_SIZE = 5;
+	@Autowired BrdMapper brdMapper;
 	//@Autowired List<String> proxyList;
 
+	
+	public void paging(){
+		ISupplier<Integer> t = ()-> brdMapper.countBrd();
+		int totalCount = t.get();
+		startrow = pagesize*(pagenum-1);
+	}
 	
 	public List<?> crawl(Map<?,?> paramMap){
 		String url = (String) paramMap.get("search");

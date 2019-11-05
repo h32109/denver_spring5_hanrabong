@@ -31,4 +31,11 @@
 		SET BRDSEQ = BRDSEQ-1
 		WHERE BRDSEQ > #{brdseq}
 	</update>
+	<select id="pagingBrd" parameterType="Pxy" resultType="Brd">
+		SELECT R1.*
+		FROM(SELECT *
+		FROM BRD
+		ORDER BY BRDSEQ DESC)R1
+		LIMIT #{startrow}, #{pagesize}
+	</select>
 </mapper>

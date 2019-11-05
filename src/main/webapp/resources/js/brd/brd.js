@@ -1,7 +1,7 @@
 "use strict"
 var brd = brd || {};
 brd = (()=>{
-	let _,js,brdvuejs, cname, $form,navijs,navivue,brdjs
+	let _,js,brdvuejs, cname, $form,navijs,navivuejs,brdjs,compovuejs,pagejs
 	
 	let init = () =>{
 		_ = $.ctx()
@@ -9,16 +9,20 @@ brd = (()=>{
 		brdvuejs = js+'/vue/brd_vue.js'
 		$form = 'form'
 		navijs = js+'/cmm/navi.js'
-		navivue = js+'/vue/navi_vue.js'
+		navivuejs = js+'/vue/navi_vue.js'
 		brdjs =js+'/brd/brd.js'
+		compovuejs = js+'/vue/compo_vue.js'
+		pagejs = js+'/cmm/page.js'
 	}
 	
 	let onCreate = () =>{
 		init()
 		$.when(
 		$.getScript(brdvuejs),
-		$.getScript(navivue),
-		$.getScript(navijs)
+		$.getScript(navivuejs),
+		$.getScript(navijs),
+		$.getScript(compovuejs),
+		$.getScript(pagejs)
 				).done(()=>{
 			setContentView()
 		})
@@ -32,17 +36,24 @@ brd = (()=>{
 		.addClass('text-center')
 		.html(brd_vue.brd_body())
 		    $('#navigation').append(navi_vue.navi_bar)
-		    setMainBrdList()
+		    setMainBrdList(1)
 		    navi.onCreate()
 	}
 	//brd_vue.brd_body({css : $.css(), img : $.img()})
-	let setMainBrdList = () =>{
+	let setMainBrdList = (x) =>{
 		$('#brd_list .media').remove()
 		$('#brd_list .d-block').remove()
-		$.getJSON('/web/brds/',d=>{
-			let list = d
-			let i = 0
-				$.each(d, (i,j)=>{
+		$('#brd_size')
+			.append(compo_vue.page_size)
+			.css({'padding-left':'1000px'})
+		$.each([5,10,15,20],(i,j)=>{
+			$('#brd_size select')
+			.append('<option value="'+j+'">'+j+'개씩보기</option>')
+		})
+		$.getJSON('/web/brds/'+x+'/'+$('#brd_size select').val(),d=>{
+			let list = d.result
+			let pagenum = d.pagenum
+				$.each(list, (i,j)=>{
 					$('#brd_list').append(brd_vue.brd_list(i))
 					$('<a>',{
 						text : j.writer
@@ -61,9 +72,11 @@ brd = (()=>{
 						alert('이미지클릭')
 					})
 				})
+			page.onCreate(pagenum)
 		})
-
 	}
+	
+
 	
 	let write=x=>{
 		$('#write_form').html(brd_vue.brd_write(x.cname))

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.hanrabong.web.pxy.Proxy;
+
 @Repository
 public interface BrdMapper {
 	public void insertContent(Brd param);
@@ -12,4 +14,5 @@ public interface BrdMapper {
 	public void deleteBrd(String brdseq);
 	public void updateBrd(Brd param);
 	public void updateBrdSeq(String brdseq);
+	public List<Brd> pagingBrd(Proxy pxy);
 }
