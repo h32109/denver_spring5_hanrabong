@@ -1,6 +1,7 @@
 package com.hanrabong.web.aop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hanrabong.web.pxy.Proxy;
+import com.hanrabong.web.pxy.ProxyMap;
 
 @RestController
 @Transactional
@@ -22,6 +24,7 @@ import com.hanrabong.web.pxy.Proxy;
 public class TxController {
 	@Autowired TxService txService;
 	@Autowired Proxy pxy;
+	@Autowired ProxyMap txMap;
 	
 	@SuppressWarnings("unchecked")
 	@PostMapping("/")
@@ -44,6 +47,14 @@ public class TxController {
 		map.put("search", search);
 		result= (List<String>) txService.searchKeyWord(map);
 		return result;
-		
+	}
+	
+
+	
+	@GetMapping("/create")
+	public Map<?,?> createDB(){
+		txMap.accept(Arrays.asList("msg"), Arrays.asList("success"));
+		pxy.crawler();
+		return txMap.get();
 	}
 }

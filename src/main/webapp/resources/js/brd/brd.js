@@ -36,7 +36,7 @@ brd = (()=>{
 		.addClass('text-center')
 		.html(brd_vue.brd_body())
 		    $('#navigation').append(navi_vue.navi_bar)
-		    setMainBrdList(1)
+		    setMainBrdList({page : '1', size: '5'})
 		    navi.onCreate()
 	}
 	//brd_vue.brd_body({css : $.css(), img : $.img()})
@@ -44,15 +44,10 @@ brd = (()=>{
 		$('#brd_list .media').remove()
 		$('#brd_list .d-block').remove()
 		$('#brd_size')
-			.append(compo_vue.page_size)
+			.html(compo_vue.page_size)
 			.css({'padding-left':'1000px'})
-		$.each([5,10,15,20],(i,j)=>{
-			$('#brd_size select')
-			.append('<option value="'+j+'">'+j+'개씩보기</option>')
-		})
-		$.getJSON('/web/brds/'+x+'/'+$('#brd_size select').val(),d=>{
+		$.getJSON('/web/brds/'+x.page+'/'+x.size,d=>{
 			let list = d.result
-			let pagenum = d.pagenum
 				$.each(list, (i,j)=>{
 					$('#brd_list').append(brd_vue.brd_list(i))
 					$('<a>',{
@@ -72,7 +67,7 @@ brd = (()=>{
 						alert('이미지클릭')
 					})
 				})
-			page.onCreate(pagenum)
+			page.onCreate(d)
 		})
 	}
 	
@@ -111,7 +106,7 @@ brd = (()=>{
 				dataType : 'json',
 				contentType : 'application/json',
 				success : d =>{
-					alert(d.brdresult)
+					alert(d.msg)
 					setContentView()
 				},
 				error : e => {
@@ -208,5 +203,5 @@ brd = (()=>{
 		})
 		
 	}
-	return {onCreate, write,setContentView, update, content, setContentView}
+	return {onCreate, write,setMainBrdList, update, content, setContentView}
 })()

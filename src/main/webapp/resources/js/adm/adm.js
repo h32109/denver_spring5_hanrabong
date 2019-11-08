@@ -37,6 +37,7 @@ var adm = adm || {}
 				.css({border: '1px solid black', width: v.size+'%', height: '80%', margin: '0 auto', 'vertical-align':'top'})
 			})
 			$.each([{txt:'웹크롤링', name:'web_crawl'},
+					{txt:'DB생성',name:'db_create'},
 					{txt:'고객관리',name:'cust_mgmt'},
 					{txt:'상품등록',name:'item_rsg'},
 					{txt:'상품조회',name:'item_srch'},
@@ -50,6 +51,9 @@ var adm = adm || {}
 					switch ($(this).attr('name')) {
 					case 'web_crawl':
 						webCrawl();
+						break;
+					case 'db_create':
+						dbcreate();
 						break;
 					case 'cust_mgmt':
 						
@@ -79,7 +83,15 @@ var adm = adm || {}
 		}
 		
 
-		
+		let dbcreate=()=>{
+			$('#right').empty()
+			$('</br><h2>DB create</h2></br></br>'+
+			          '<button value = "create" id = "create"class="btn btn-secondary my-2 my-sm-0" >create</button>')
+			.appendTo('#right')
+			$.getJSON(_+'/txs/create',d=>{
+				alert(d.msg)
+			})
+		}
 		let webCrawl=()=>{
 			$('#right').empty()
 			$('</br><h2>Web Crawling</h2></br></br>'+
