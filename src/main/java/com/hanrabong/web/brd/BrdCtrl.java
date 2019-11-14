@@ -1,11 +1,12 @@
 package com.hanrabong.web.brd;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +15,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hanrabong.web.cmm.IConsumer;
 import com.hanrabong.web.cmm.IFunction;
 import com.hanrabong.web.cmm.ISupplier;
+import com.hanrabong.web.enums.Path;
+import com.hanrabong.web.pxy.FileProxy;
+import com.hanrabong.web.pxy.PageProxy;
 import com.hanrabong.web.pxy.Proxy;
-import com.hanrabong.web.pxy.ProxyMap;
+import com.hanrabong.web.pxy.Trunk;
 import com.hanrabong.web.utl.Printer;
 
 @RestController
@@ -29,8 +34,9 @@ public class BrdCtrl {
 	@Autowired Map<String, Object> map;
 	@Autowired BrdMapper brdMapper;
 	@Autowired Brd brd;
-	@Autowired Proxy brdPxy;
-	@Autowired ProxyMap pxymap;
+	@Qualifier PageProxy pager;
+	@Autowired Trunk<Object> trunk;
+	@Autowired FileProxy filemgr;
 	
 	@PutMapping("/{brdseq}")
 	public Map<?,?> updateBrd(@PathVariable String brdseq, @RequestBody Brd brd) {
@@ -52,14 +58,14 @@ public class BrdCtrl {
 	}
 	@GetMapping("/{pagenum}/{pagesize}")
 	public Map<?,?> getBrd(@PathVariable String pagenum ,@PathVariable String pagesize) {
-		brdPxy.setPagenum(Integer.parseInt(pagenum));
-		brdPxy.setPagesize(Integer.parseInt(pagesize));
-		brdPxy.paging();
-		IFunction<Proxy, List<Brd>> f = d -> brdMapper.pagingBrd(brdPxy);
+		pager.setPagenum(Integer.parseInt(pagenum));
+		pager.setPagesize(Integer.parseInt(pagesize));
+		pager.paging();
+		IFunction<Proxy, List<Brd>> f = d -> brdMapper.pagingBrd(pager);
 		map.clear();
-		pxymap.accept(Arrays.asList("result","pagenum","pxy"),
-				Arrays.asList(f.apply(brdPxy), brdPxy.paging(), brdPxy));
-		return pxymap.get();
+		trunk.accept(Arrays.asList("result","pagenum","pxy"),
+				Arrays.asList(f.apply(pager), pager.paging(), pager));
+		return trunk.get();
 	}
 	@PostMapping("/")
 	public Map<?,?> putBrd(@RequestBody Brd param) {
@@ -67,9 +73,9 @@ public class BrdCtrl {
 		param.setBrdseq(String.valueOf(s.get()+1));
 		IConsumer<Object> f = p -> brdMapper.insertContent(param);
 		f.accept(param);
-		pxymap.accept(Arrays.asList("msg"), Arrays.asList("success"));
-		System.out.println(pxymap.get().get("msg"));
-		return pxymap.get();
+		trunk.accept(Arrays.asList("msg"), Arrays.asList("success"));
+		System.out.println(trunk.get().get("msg"));
+		return trunk.get();
 	}
 	@GetMapping("/count")
 	public Map<?,?> countBrd(){
@@ -77,6 +83,11 @@ public class BrdCtrl {
 		ISupplier<Integer> t = ()-> brdMapper.countBrd();
 		map.put("count", t.get());
 		return map;
+	}
+	
+	@GetMapping("/fileupload")
+	public void FileUpload(MultipartFile[] uploadfile) {
+		filemgr.fileUpload(uploadfile);
 	}
 
 	

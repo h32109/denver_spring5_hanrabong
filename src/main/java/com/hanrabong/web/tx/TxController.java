@@ -1,4 +1,4 @@
-package com.hanrabong.web.aop;
+package com.hanrabong.web.tx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hanrabong.web.pxy.Proxy;
-import com.hanrabong.web.pxy.ProxyMap;
+import com.hanrabong.web.pxy.CrawlingProxy;
+import com.hanrabong.web.pxy.Trunk;
 
 @RestController
 @Transactional
 @RequestMapping("/txs")
 public class TxController {
 	@Autowired TxService txService;
-	@Autowired Proxy pxy;
-	@Autowired ProxyMap txMap;
+	@Qualifier CrawlingProxy crawl;
+	@Autowired Trunk<Object> trunk;
 	
 	@SuppressWarnings("unchecked")
 	@PostMapping("/")
-	public List<?> crawl(@RequestBody Proxy param){
+	public List<?> crawl(@RequestBody CrawlingProxy param){
 		Map<String,Object> map = new HashMap<>();
 		List<String> result = new ArrayList<>();
 		map.put("search", param.getSearch());
@@ -53,8 +54,8 @@ public class TxController {
 	
 	@GetMapping("/create")
 	public Map<?,?> createDB(){
-		txMap.accept(Arrays.asList("msg"), Arrays.asList("success"));
-		pxy.crawler();
-		return txMap.get();
+		trunk.accept(Arrays.asList("msg"), Arrays.asList("success"));
+		crawl.crawler();
+		return trunk.get();
 	}
 }

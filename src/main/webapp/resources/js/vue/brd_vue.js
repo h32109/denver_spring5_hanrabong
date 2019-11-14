@@ -125,6 +125,8 @@ brd_vue = {
         +' </div>'
         +'<div id ="write_cancle"></div>'
         +'<div id ="write_submit"></div>'
+        +'<div id ="write_upload"></div>'
+        +'<div id ="write_admit"></div>'
         /*+' <input type="reset" class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="CANCEL"/>'
         +'<input name="write" type="submit" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/>'*/
         +'<input type="hidden" name="action" value="write"/>'

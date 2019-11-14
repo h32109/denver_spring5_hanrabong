@@ -115,6 +115,41 @@ brd = (()=>{
 			})
 
 		})
+		
+		$('<input>',{
+			style: "float:right;width:100px;margin-right:10px",
+			value: "UPLOAD"
+		})
+		.addClass("btn btn-warning")
+		.appendTo('#write_upload')
+		.click(e=>{
+			e.preventDefault()
+			let formData = new FormData();
+			let inputFile = $('#upload');
+			let files = inputFile[0].files;
+			let i = 0
+			for(i;i<files.length;i++){
+				if(!$.fn.checkExtension({fname: files[i].name, fsize: files[i].size})){
+					return false
+				}else{
+					formData.append("uploadfile", files[i])
+					}
+				}	
+			$.ajax({
+				url: '/web/articles/fileupload',
+				processData : false,
+				contentType : false,
+				data : formData,
+				type : 'POST',
+				success : d =>{
+					alert('파일업로드성공')
+				}
+			})
+			
+		})
+		
+		$('<input type="file" id="upload" multiple />')
+		.appendTo("#write_admit")
 	}
 	
 	let content =x=>{

@@ -19,7 +19,7 @@
 		<aspectj-version>1.6.10</aspectj-version>
 		<slf4j-version>1.6.6</slf4j-version>
 		<lombok-version>1.18.8</lombok-version>
-		<servlet-version>2.5</servlet-version>
+		<servlet-version>3.1.0</servlet-version>
 		<jsp-version>2.1</jsp-version>
 		<jstl-version>1.2</jstl-version>
 		<junit-version>4.7</junit-version>
@@ -32,8 +32,16 @@
 		<hikar-version>3.4.1</hikar-version>
 		<jsoup-version>1.12.1</jsoup-version>
 		<spring-test-version>5.2.0.RELEASE</spring-test-version>
+		<thumb-version>0.4.8</thumb-version>	
+		<jackson-df-version>2.9.9</jackson-df-version>
 	</properties>
 	<dependencies>
+	    <!-- thumbnailator -->
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>${thumb-version}</version>
+		</dependency>
 		<!-- jsoup -->
 		<dependency>
 		    <groupId>org.jsoup</groupId>
@@ -138,6 +146,12 @@
 		    <artifactId>jackson-databind</artifactId>
 		    <version>${jackson-version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.dataformat</groupId>
+		    <artifactId>jackson-dataformat-xml</artifactId>
+		    <version>${jackson-df-version}</version>
+		</dependency>
 	
 	
 		<!-- mybatis-spring -->
@@ -214,10 +228,11 @@
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<version>${servlet-version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
